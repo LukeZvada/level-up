@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
-from levelupapi.models import Event, Gamer, EventGamers, Game
+from levelupapi.models import Event, Gamer, EventGamer, Game
 
 
 class Profile(ViewSet):
@@ -39,14 +39,14 @@ class Profile(ViewSet):
             gamer = Gamer.objects.get(user=request.auth.user)
 
             try:
-                registration = EventGamers.objects.get(
+                registration = EventGamer.objects.get(
                     event=event, gamer=gamer)
                 return Response(
                     {'message': 'Gamer already signed up this event.'},
                     status=status.HTTP_422_UNPROCESSABLE_ENTITY
                 )
-            except EventGamers.DoesNotExist:
-                registration = EventGamers()
+            except EventGamer.DoesNotExist:
+                registration = EventGamer()
                 registration.event = event
                 registration.gamer = gamer
                 registration.save()
@@ -65,10 +65,10 @@ class Profile(ViewSet):
             gamer = Gamer.objects.get(user=request.auth.user)
 
             try:
-                registration = EventGamers.objects.get(
+                registration = EventGamer.objects.get(
                     event=event, gamer=gamer)
                 registration.delete()
-            except EventGamers.DoesNotExist:
+            except EventGamer.DoesNotExist:
                 return Response(
                     {'message': 'Not currently registered for event.'},
                     status=status.HTTP_404_NOT_FOUND
